@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-light bg-light px-4">
+    <nav className="navbar navbar-light bg-info px-4">
       <Link to="/" navbar="navbar-brand">
         AuthJS
       </Link>
