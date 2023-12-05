@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import SignUpModal from "./components/SignUpModal";
+import SignUpModal from "./components/signUpModal";
 
 function App() {
   return (

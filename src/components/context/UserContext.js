@@ -1,8 +1,24 @@
 import { createContext, useState } from "react";
 
+//il faut imorter les methodes de firebase pour inscrire kes utilisateurs dans la base
+import {
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged 
+} from "firebase/auth"
+import { auth }from "../../firebase-config"
+
+
 export const UserContext = createContext();
 
 export function UserContextProvider (props) {
+
+    const [currentUser, setCurrentUser] = useState();
+    const [loadingData, setLoadinData] = useState(true);
+
+    const signUp = (email, pwd) => createUserWithEmailAndPassword(auth, email, pwd)
+
+    // ci dessous la partie modal
 
     const [modalState, setModalState] = useState({
         SignUpModal: false,
@@ -30,7 +46,7 @@ export function UserContextProvider (props) {
     }
 
     return(
-        <UserContext.Provider value= {{modalState, toggleModals}}>
+        <UserContext.Provider value= {{modalState, toggleModals, signUp}}>
             { props.children }
         </UserContext.Provider>
     )

@@ -1,10 +1,46 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { UserContext } from './context/UserContext';
 
 export default function SignUpModal() {
 
-    const {modalState, toggleModals} = useContext(UserContext);
-    console.log(modalState, toggleModals);
+    const {modalState, toggleModals, signUp} = useContext(UserContext);
+    console.log(signUp)
+
+    const[validation, setValidation] = useState("");
+    
+    const inputs =useRef([])
+    const addInputs = el => {  //el = element que l'on va selectionner
+        if(el && !inputs.current.includes(el)){ // si (element existe && s'il n'est pas déjà dans le tableau)
+            inputs.current.push(el) // alors je le rajoute dedans
+        }
+    }
+    const formRef = useRef();
+    const handleForm  = async e => {
+        e.preventDefault()
+        //conditons de vérification des mots de passes (longueur et identicité)
+        //vérifier la longueur du mot de passe 1 et du mot de passe 2 
+        if((inputs.current[1].value.length || inputs.current[2].value.length) < 6){ //si current 1 ou current 2 < 6  message erreur
+            setValidation("Attention, 6 caractères minimum demandés")
+            return;
+        }
+        //vérifier que les deux mots de passes sont strictement identiques
+        else if(inputs.current[1].value !== inputs.current[2].value){
+            setValidation ("les 2 mots de passe sont differents")
+            return;
+        }
+        try {
+            const cred = await signUp(
+                inputs.current[0].value,
+                inputs.current[1].value
+            )
+            formRef.current.reset();
+            setValidation("")
+            console.log(cred);
+
+        } catch(err){
+
+        }
+    }
 
   return (
     <>
@@ -27,25 +63,25 @@ export default function SignUpModal() {
                                 className ="btn-close"></button>
                             </div>
                             <div className ="modal-body">
-                                <form className ="sign-up-form">
+                                <form ref={formRef} onSubmit={handleForm} className ="sign-up-form">
                                     <div className ="mb-3">
                                         <label htmlFor ="signUpEmail"> 
                                         Email adress
                                         </label>
-                                        <input type ="email" name ="email" className ="form-control" required id ="signUpEmail"></input>
+                                        <input ref={addInputs} type ="email" name ="email" className ="form-control" required id ="signUpEmail"></input>
                                     </div>
                                     <div className ="mb-3">
                                         <label htmlFor ="signUpPwd" className ="form-label"> 
                                         Password
                                         </label>
-                                        <input type ="password" name ="pwd" className ="form-control" required id ="signUpPwd"></input>
+                                        <input ref={addInputs} type ="password" name ="pwd" className ="form-control" required id ="signUpPwd"></input>
                                     </div>
                                     <div className ="mb-3">
                                         <label htmlFor ="repeatPwd"className ="form-label"> 
                                         Repeat Password
                                         </label>
-                                        <input type ="password" name ="pwd" className ="form-control" required id ="repeatPwd"></input>
-                                        <p className ="text-danger mt-1"></p>
+                                        <input ref={addInputs} type ="password" name ="pwd" className ="form-control" required id ="repeatPwd"></input>
+                                        <p className ="text-danger mt-1">{validation}</p>
                                     </div>
                                     <button className='btn btn-primary'> Submit</button>
                                 </form>
